@@ -40,7 +40,8 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://www.amazon.com/dp/B0XXXXXXXXX"
             required
-            className="w-full bg-gray-900/80 border border-gray-700 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition group-hover:border-gray-600"
+            disabled={loading}
+            className="w-full bg-gray-900/80 border border-gray-700 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition group-hover:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition pointer-events-none" />
         </div>
@@ -70,7 +71,8 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
           <button
             type="button"
             onClick={handleClear}
-            className="px-4 py-3.5 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-300 rounded-xl text-sm text-gray-400 transition whitespace-nowrap group"
+            disabled={loading}
+            className="px-4 py-3.5 bg-gray-800 border border-gray-700 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-300 rounded-xl text-sm text-gray-400 transition whitespace-nowrap group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-800 disabled:hover:border-gray-700 disabled:hover:text-gray-400"
           >
             <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -96,8 +98,13 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
           </button>
         ))}
       </div>
+      {loading && (
+        <p className="text-[11px] text-amber-400/80 mt-1 animate-pulse">
+          This may take 30-60s on the first request as the server wakes up from inactivity.
+        </p>
+      )}
       <p className="text-[10px] text-gray-600 mt-1">
-        Supports: amazon.com/dp/..., amazon.in/dp/..., a.co/d/... (share links), amzn.to/... (short links)
+        Supports: amazon.com/dp/..., amazon.in/dp/..., a.co/..., amzn.to/..., amzn.in/d/... (share links)
       </p>
     </form>
   );

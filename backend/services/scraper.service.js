@@ -18,8 +18,8 @@ function extractASIN(url) {
 }
 
 async function resolveUrl(url) {
-  // Handle shortened Amazon URLs (a.co, amzn.to, amzn.com)
-  if (/^https?:\/\/(a\.co|amzn\.to|amzn\.com)\//i.test(url)) {
+  // Handle shortened Amazon URLs (a.co, amzn.to, amzn.com, amzn.in)
+  if (/^https?:\/\/(a\.co|amzn\.to|amzn\.com|amzn\.in)\//i.test(url)) {
     try {
       const resp = await axios.head(url, { maxRedirects: 5 });
       return resp.request.res.responseUrl || url;
@@ -39,13 +39,26 @@ async function resolveUrl(url) {
   return url;
 }
 
+function detectCountry(url) {
+  if (/amazon\.in|amzn\.in/i.test(url)) return "IN";
+  if (/amazon\.co\.uk/i.test(url)) return "GB";
+  if (/amazon\.de/i.test(url)) return "DE";
+  if (/amazon\.ca/i.test(url)) return "CA";
+  if (/amazon\.co\.jp/i.test(url)) return "JP";
+  return "US";
+}
+
 async function scrapeProduct(productUrl) {
   const resolvedUrl = await resolveUrl(productUrl);
   const asin = extractASIN(resolvedUrl);
 
   if (!asin) {
-    throw new Error("Invalid Amazon URL. Could not extract product ID.");
+    throw new Error(
+      "Could not extract product ID. If using a short link (amzn.in/d/...), it may have expired. Try the full product URL instead."
+    );
   }
+
+  const country = detectCountry(productUrl) || detectCountry(resolvedUrl);
 
   // Use real API if key is configured, otherwise fall back to mock
   if (!config.rapidApiKey || config.rapidApiKey.includes("your-rapidapi")) {
@@ -55,8 +68,8 @@ async function scrapeProduct(productUrl) {
 
   try {
     const [productData, reviewsData] = await Promise.all([
-      fetchProductDetails(asin),
-      fetchProductReviews(asin),
+      fetchProductDetails(asin, country),
+      fetchProductReviews(asin, country),
     ]);
 
     return { product: productData, reviews: reviewsData };
@@ -67,11 +80,11 @@ async function scrapeProduct(productUrl) {
   }
 }
 
-async function fetchProductDetails(asin) {
+async function fetchProductDetails(asin, country = "US") {
   const response = await axios.get(
     `https://${RAPIDAPI_HOST}/product-details`,
     {
-      params: { asin, country: "US" },
+      params: { asin, country },
       headers: {
         "x-rapidapi-key": config.rapidApiKey,
         "x-rapidapi-host": RAPIDAPI_HOST,
@@ -93,11 +106,11 @@ async function fetchProductDetails(asin) {
   };
 }
 
-async function fetchProductReviews(asin) {
+async function fetchProductReviews(asin, country = "US") {
   const response = await axios.get(
     `https://${RAPIDAPI_HOST}/product-reviews`,
     {
-      params: { asin, country: "US", page: "1" },
+      params: { asin, country, page: "1" },
       headers: {
         "x-rapidapi-key": config.rapidApiKey,
         "x-rapidapi-host": RAPIDAPI_HOST,

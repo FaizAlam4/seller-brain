@@ -7,7 +7,7 @@ async function analyzeProduct(req, res) {
   try {
     const { productUrl } = req.body;
 
-    if (!productUrl || !productUrl.includes("amazon")) {
+    if (!productUrl || !/amazon|amzn\.in|amzn\.to|amzn\.com|a\.co/i.test(productUrl)) {
       return res.status(400).json({
         error: "Please provide a valid Amazon product URL.",
       });

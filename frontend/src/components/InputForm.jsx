@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 const SAMPLE_PRODUCTS = [
-  { label: "Sony WH-1000XM5 Headphones", url: "https://www.amazon.com/dp/B0BX8M4YN6" },
-  { label: "Apple AirPods Pro 2", url: "https://www.amazon.com/dp/B0D1XD1ZV3" },
-  { label: "Anker Soundcore Earbuds", url: "https://www.amazon.com/dp/B0B8NVGR53" },
+  { label: "boAt Rockerz 551ANC", url: "https://www.amazon.in/dp/B0CX5B8VCT" },
+  { label: "Alpino High Protein Oats", url: "https://www.amazon.in/dp/B0C5R1V6MJ" },
+  { label: "OnePlus Nord Buds 3", url: "https://www.amazon.in/dp/B0DKLDX8FT" },
 ];
 
 export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {

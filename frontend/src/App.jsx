@@ -7,6 +7,7 @@ import CompetitorTable from "./components/CompetitorTable";
 import Navbar from "./components/Navbar";
 import AboutPage from "./pages/AboutPage";
 import { analyzeProduct } from "./services/api";
+import { getMockDataForUrl } from "./services/mockData";
 import { downloadPDFReport } from "./services/reportGenerator";
 
 export default function App() {
@@ -47,8 +48,16 @@ function HomePage() {
     setData(null);
     setActiveUrl(url);
     try {
-      const result = await analyzeProduct(url);
-      setData(result);
+      // Use mock data for sample products (no API call)
+      const mock = getMockDataForUrl(url);
+      if (mock) {
+        // Simulate brief loading for UX
+        await new Promise((r) => setTimeout(r, 800));
+        setData(mock);
+      } else {
+        const result = await analyzeProduct(url);
+        setData(result);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -78,10 +87,10 @@ function HomePage() {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-                { label: "Best Sellers", url: "https://www.amazon.com/Best-Sellers/zgbs", desc: "Top products by category" },
-                { label: "New Releases", url: "https://www.amazon.com/gp/new-releases", desc: "Hot new arrivals" },
-                { label: "Movers & Shakers", url: "https://www.amazon.com/gp/movers-and-shakers", desc: "Biggest rank gains (24h)" },
-                { label: "Most Wished For", url: "https://www.amazon.com/gp/most-wished-for", desc: "Top wishlisted items" },
+                { label: "Best Sellers", url: "https://www.amazon.in/gp/bestsellers", desc: "Top products by category" },
+                { label: "New Releases", url: "https://www.amazon.in/gp/new-releases", desc: "Hot new arrivals" },
+                { label: "Movers & Shakers", url: "https://www.amazon.in/gp/movers-and-shakers", desc: "Biggest rank gains (24h)" },
+                { label: "Most Wished For", url: "https://www.amazon.in/gp/most-wished-for", desc: "Top wishlisted items" },
               ].map((link) => (
                 <a
                   key={link.label}

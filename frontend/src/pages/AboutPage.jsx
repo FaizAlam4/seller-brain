@@ -21,8 +21,12 @@ export default function AboutPage() {
           customer sentiment from real reviews, competitor analysis, and AI-generated recommendations for what to do next.
         </p>
         <p className="text-sm text-gray-300 leading-relaxed">
-          Whether you're validating a product idea, scouting the competition, or looking for gaps in the market,
-          Revenue Lens AI gives you the insights you need in seconds — no sign-up required.
+          It works by directly scraping live Amazon product pages (no stale data or cached results), then running the reviews through
+          Groq's Llama 3.3 70B model for deep sentiment analysis. Whether you're validating a product idea, scouting the competition,
+          or looking for gaps in the market — Revenue Lens AI gives you the insights you need in seconds. No sign-up required.
+        </p>
+        <p className="text-sm text-gray-300 leading-relaxed">
+          Supports amazon.in, amazon.com, and short links (amzn.in/d/..., amzn.to/..., a.co/...).
         </p>
       </div>
 
@@ -73,9 +77,9 @@ export default function AboutPage() {
       <div className="bg-gray-900/50 border border-gray-800/60 rounded-2xl p-5 sm:p-8 space-y-6">
         <h2 className="text-lg sm:text-xl font-bold text-white">How it works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <StepCard step={1} title="Paste a URL" description="Copy any Amazon product link and paste it into the search bar." />
-          <StepCard step={2} title="AI analyzes" description="Our AI scrapes reviews, estimates revenue, and maps the competitive landscape." />
-          <StepCard step={3} title="Get insights" description="Receive actionable intelligence in seconds — revenue, sentiment, opportunities, and more." />
+          <StepCard step={1} title="Paste a URL" description="Copy any Amazon product link (amazon.in, amazon.com, short links) and paste it into the search bar." />
+          <StepCard step={2} title="Real-time scraping" description="We scrape live product data, pricing, ratings, and actual customer reviews directly from Amazon." />
+          <StepCard step={3} title="AI-powered insights" description="Groq Llama 3.3 70B analyzes reviews, generates competitor intel, estimates revenue, and delivers actionable next steps." />
         </div>
       </div>
 

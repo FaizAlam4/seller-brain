@@ -34,7 +34,7 @@ async function getAICompetitors(product) {
   const prompt = `You are an Amazon product research expert. For this product:
 "${product.title}" — priced at $${product.price}, rated ${product.rating}/5, with ${product.totalReviews} reviews.
 
-Return a JSON array of exactly 3 real competitor products in the same category on Amazon. Each must have:
+Return a JSON array of exactly 9 real competitor products in the same category on Amazon. Each must have:
 {
   "name": "Full product name (real product that exists on Amazon)",
   "price": number (realistic USD price),
@@ -48,7 +48,7 @@ Return a JSON array of exactly 3 real competitor products in the same category o
 Rules:
 - Products must be REAL competitors in the same category
 - Prices should be realistic current Amazon prices
-- Include a mix: one cheaper, one similar price, one premium
+- Include a mix: 3 cheaper, 3 similar price, 3 premium
 - Strengths/weaknesses should be relative to "${product.title}"
 
 Return ONLY the JSON array. No markdown, no explanation.`;
@@ -57,7 +57,7 @@ Return ONLY the JSON array. No markdown, no explanation.`;
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
     temperature: 0.7,
-    max_tokens: 800,
+    max_tokens: 2000,
   });
 
   const content = response.choices[0].message.content.trim();

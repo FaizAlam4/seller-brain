@@ -65,14 +65,14 @@ Return ONLY the JSON object. No markdown, no code fences, no extra text.`;
       const content = response.choices[0].message.content.trim();
       return parseAIResponse(content);
     } catch (err) {
-      if (err.status === 429) {
-        console.log(`Groq ${model} rate limited — trying next model...`);
+      if (err.status === 429 || err.status === 503) {
+        console.log(`Groq ${model} unavailable (${err.status}) — trying next model...`);
         continue;
       }
       throw err;
     }
   }
-  throw new Error("All Groq models rate limited");
+  throw new Error("All Groq models unavailable");
 }
 
 function parseAIResponse(content) {

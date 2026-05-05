@@ -88,14 +88,14 @@ Return ONLY the JSON array. No markdown, no explanation.`;
 
       return formatCompetitors(competitors, product);
     } catch (err) {
-      if (err.status === 429) {
-        console.log(`Groq ${model} rate limited for competitors — trying next model...`);
+      if (err.status === 429 || err.status === 503) {
+        console.log(`Groq ${model} unavailable for competitors (${err.status}) — trying next model...`);
         continue;
       }
       throw err;
     }
   }
-  throw new Error("All Groq models rate limited");
+  throw new Error("All Groq models unavailable");
 }
 
 function formatCompetitors(competitors, product) {

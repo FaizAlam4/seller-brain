@@ -38,39 +38,60 @@ Rules:
 - "opportunities": exactly 3 strings. Each a concrete product improvement idea.
 - "actionTomorrow": one sentence, starts with a verb, bold and money-focused.
 - "summary": exactly 2 sentences.
+- Do NOT use markdown formatting like **bold** or *italic* in any values.
 
 Reviews:
 ${reviewText}
 
 Return ONLY the JSON object. No markdown, no code fences, no extra text.`;
 
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 1500,
-  });
+  // Fallback chain: 70B (100K TPD) → Scout 17B (500K) → Qwen3 32B (500K) → 8B (500K)
+  const models = [
+    "llama-3.3-70b-versatile",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "qwen/qwen3-32b",
+    "llama-3.1-8b-instant",
+  ];
 
-  const content = response.choices[0].message.content.trim();
+  for (const model of models) {
+    try {
+      const response = await groq.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 1500,
+      });
+
+      const content = response.choices[0].message.content.trim();
+      return parseAIResponse(content);
+    } catch (err) {
+      if (err.status === 429) {
+        console.log(`Groq ${model} rate limited — trying next model...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error("All Groq models rate limited");
+}
+
+function parseAIResponse(content) {
+  // Strip markdown bold/italic that breaks JSON
+  const cleaned = content.replace(/\*\*/g, "").replace(/\*/g, "");
 
   let parsed;
   try {
-    parsed = JSON.parse(content);
+    parsed = JSON.parse(cleaned);
   } catch {
-    // Strip markdown code fences if model wraps the response
-    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) parsed = JSON.parse(jsonMatch[1].trim());
     else {
-      const rawMatch = content.match(/\{[\s\S]*\}/);
+      const rawMatch = cleaned.match(/\{[\s\S]*\}/);
       if (rawMatch) parsed = JSON.parse(rawMatch[0]);
       else throw new Error("Failed to parse AI response");
     }
   }
 
-  // Clean any markdown formatting from string values
-  if (parsed.actionTomorrow) {
-    parsed.actionTomorrow = parsed.actionTomorrow.replace(/\*\*/g, "").replace(/\*/g, "");
-  }
   return parsed;
 }
 

@@ -53,29 +53,49 @@ Rules:
 
 Return ONLY the JSON array. No markdown, no explanation.`;
 
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 2000,
-  });
+  // Fallback chain: 70B (100K TPD) → Scout 17B (500K) → Qwen3 32B (500K) → 8B (500K)
+  const models = [
+    "llama-3.3-70b-versatile",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "qwen/qwen3-32b",
+    "llama-3.1-8b-instant",
+  ];
 
-  const content = response.choices[0].message.content.trim();
+  for (const model of models) {
+    try {
+      const response = await groq.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 2000,
+      });
 
-  let competitors;
-  try {
-    competitors = JSON.parse(content);
-  } catch {
-    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) competitors = JSON.parse(jsonMatch[1].trim());
-    else {
-      const rawMatch = content.match(/\[[\s\S]*\]/);
-      if (rawMatch) competitors = JSON.parse(rawMatch[0]);
-      else throw new Error("Failed to parse competitor response");
+      const content = response.choices[0].message.content.trim();
+      const cleaned = content.replace(/\*\*/g, "").replace(/\*/g, "");
+
+      let competitors;
+      try {
+        competitors = JSON.parse(cleaned);
+      } catch {
+        const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (jsonMatch) competitors = JSON.parse(jsonMatch[1].trim());
+        else {
+          const rawMatch = cleaned.match(/\[[\s\S]*\]/);
+          if (rawMatch) competitors = JSON.parse(rawMatch[0]);
+          else throw new Error("Failed to parse competitor response");
+        }
+      }
+
+      return formatCompetitors(competitors, product);
+    } catch (err) {
+      if (err.status === 429) {
+        console.log(`Groq ${model} rate limited for competitors — trying next model...`);
+        continue;
+      }
+      throw err;
     }
   }
-
-  return formatCompetitors(competitors, product);
+  throw new Error("All Groq models rate limited");
 }
 
 function formatCompetitors(competitors, product) {

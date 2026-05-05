@@ -27,12 +27,12 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <h2 className="text-3xl font-extrabold mb-2 gradient-text">Analyze any Amazon product</h2>
+        <h2 className="text-2xl sm:text-3xl font-extrabold mb-2 gradient-text">Analyze any Amazon product</h2>
         <p className="text-gray-400 text-sm">
           Paste a product URL → get AI-powered revenue insights in seconds.
         </p>
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative group">
           <input
             type="url"
@@ -45,10 +45,11 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
           />
           <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition pointer-events-none" />
         </div>
+        <div className="flex gap-3">
         <button
           type="submit"
           disabled={loading}
-          className="px-7 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-semibold transition shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 whitespace-nowrap"
+          className="flex-1 sm:flex-none px-7 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-semibold transition shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 whitespace-nowrap"
         >
           {loading ? (
             <span className="flex items-center gap-2">
@@ -79,6 +80,7 @@ export default function InputForm({ onSubmit, loading, onClear, activeUrl }) {
             </svg>
           </button>
         )}
+        </div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-xs text-gray-500">Try an example:</span>

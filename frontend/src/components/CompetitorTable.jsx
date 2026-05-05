@@ -1,12 +1,12 @@
 export default function CompetitorTable({ competitors }) {
   return (
-    <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+    <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-4 sm:p-6">
       <h3 className="text-xs uppercase tracking-widest text-gray-400 font-semibold mb-4 flex items-center gap-2">
         <span className="w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center">🏆</span>
         Competitor Landscape
       </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="text-left text-gray-500 border-b border-gray-800">
               <th className="pb-3 font-medium">Product</th>

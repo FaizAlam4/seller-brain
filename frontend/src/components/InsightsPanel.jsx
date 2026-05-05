@@ -4,7 +4,7 @@ export default function InsightsPanel({ positives, negatives, opportunities }) {
       {/* Positives vs Negatives */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Positives */}
-        <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+        <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-4 sm:p-6">
           <h3 className="text-xs uppercase tracking-widest text-emerald-400 font-semibold mb-4 flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center">✅</span>
             What customers love
@@ -29,7 +29,7 @@ export default function InsightsPanel({ positives, negatives, opportunities }) {
         </div>
 
         {/* Negatives */}
-        <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+        <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-4 sm:p-6">
           <h3 className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-4 flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center">⚠️</span>
             What customers complain about
@@ -55,7 +55,7 @@ export default function InsightsPanel({ positives, negatives, opportunities }) {
       </div>
 
       {/* Opportunities */}
-      <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-6">
+      <div className="card-hover bg-gray-900/80 border border-gray-800 rounded-2xl p-4 sm:p-6">
         <h3 className="text-xs uppercase tracking-widest text-amber-400 font-semibold mb-4 flex items-center gap-2">
           <span className="w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center">💡</span>
           Product Opportunities

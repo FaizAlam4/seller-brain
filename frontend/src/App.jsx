@@ -1,12 +1,41 @@
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import InputForm from "./components/InputForm";
 import SummaryCard from "./components/SummaryCard";
 import InsightsPanel from "./components/InsightsPanel";
 import CompetitorTable from "./components/CompetitorTable";
+import Navbar from "./components/Navbar";
+import AboutPage from "./pages/AboutPage";
 import { analyzeProduct } from "./services/api";
 import { downloadPDFReport } from "./services/reportGenerator";
 
 export default function App() {
+  return (
+    <div className="min-h-screen bg-gray-950 text-white">
+      {/* Ambient background glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+      </div>
+
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-800/50 mt-20 py-6">
+        <p className="text-center text-xs text-gray-600">
+          Built with React, Express & Groq AI — Revenue Lens AI © 2025
+        </p>
+      </footer>
+    </div>
+  );
+}
+
+function HomePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,32 +63,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Ambient background glow */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-      </div>
-
-      {/* Header */}
-      <header className="border-b border-gray-800/50 glass sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 18 L8 10 L12 14 L16 6 L20 8" />
-              <circle cx="20" cy="8" r="2" fill="#34d399" stroke="#34d399" />
-            </svg>
-          </div>
-          <h1 className="text-lg font-bold tracking-tight gradient-text">Revenue Lens AI</h1>
-          <div className="ml-auto flex items-center gap-3">
-            <span className="text-[10px] px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 hidden sm:block">
-              Free tier · Limited lookups for new URLs
-            </span>
-          </div>
-        </div>
-      </header>
-
-      <main className="relative max-w-6xl mx-auto px-6 py-10 space-y-8">
+    <main className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
         {/* Input */}
         <div className="animate-fade-in-up">
           <InputForm onSubmit={handleAnalyze} loading={loading} onClear={handleClear} activeUrl={activeUrl} />
@@ -72,7 +76,7 @@ export default function App() {
               <span className="w-5 h-5 rounded-md bg-violet-500/20 flex items-center justify-center text-[10px]">🔍</span>
               Find products to analyze
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
                 { label: "Best Sellers", url: "https://www.amazon.com/Best-Sellers/zgbs", desc: "Top products by category" },
                 { label: "New Releases", url: "https://www.amazon.com/gp/new-releases", desc: "Hot new arrivals" },
@@ -130,13 +134,13 @@ export default function App() {
         {data && !loading && (
           <div className="space-y-6 stagger-children">
             {/* Action Tomorrow — The killer section */}
-            <div className="card-hover animate-pulse-glow bg-gradient-to-r from-violet-600/20 via-indigo-600/15 to-violet-600/20 border border-violet-500/30 rounded-2xl p-6 relative overflow-hidden">
+            <div className="card-hover animate-pulse-glow bg-gradient-to-r from-violet-600/20 via-indigo-600/15 to-violet-600/20 border border-violet-500/30 rounded-2xl p-4 sm:p-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
               <h2 className="text-xs uppercase tracking-widest text-violet-400 font-semibold mb-3 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center">🎯</span>
                 What should you change tomorrow?
               </h2>
-              <p className="text-lg text-white leading-relaxed font-medium relative z-10">
+              <p className="text-base sm:text-lg text-white leading-relaxed font-medium relative z-10">
                 {data.actionTomorrow}
               </p>
             </div>
@@ -153,7 +157,7 @@ export default function App() {
                   Revenue Estimate
                 </h3>
                 <div className="animate-count-up">
-                  <span className="text-4xl font-extrabold text-emerald-400">
+                  <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400">
                     {data.estimatedRevenue.formattedRevenue}
                   </span>
                   <span className="text-sm text-gray-500 font-normal ml-2">/month</span>
@@ -211,13 +215,5 @@ export default function App() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 mt-20 py-6">
-        <p className="text-center text-xs text-gray-600">
-          Built with React, Express & OpenAI — Revenue Lens AI © 2025
-        </p>
-      </footer>
-    </div>
   );
 }
